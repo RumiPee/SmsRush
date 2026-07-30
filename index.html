@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SMS Rush</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+      <img src="assets/logo.svg" alt="SMS Rush logo" class="loading-logo">
+      <h1>SMS Rush</h1>
+      <p>Loading your workspace…</p>
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <!-- Access Denied Screen -->
+  <div id="access-denied" class="access-denied" style="display:none;">
+    <div class="access-content">
+      <img src="assets/logo.svg" alt="SMS Rush" class="denied-logo">
+      <h1>Access Unavailable</h1>
+      <p>This application is available through its authorized app environment.</p>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" style="display:none;">
+    <!-- Top Navigation -->
+    <nav class="navbar">
+      <div class="navbar-inner">
+        <div class="logo">
+          <img src="assets/logo.svg" alt="SMS Rush" class="logo-icon">
+          <span class="logo-text">SMS<span class="logo-highlight">Rush</span></span>
+        </div>
+        <div class="tagline">Create. Send. Engage.</div>
+        <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+      </div>
+      <div id="nav-menu" class="nav-menu">
+        <a href="#" data-section="dashboard" class="nav-link active">Dashboard</a>
+        <a href="#" data-section="campaigns" class="nav-link">Campaigns</a>
+        <a href="#" data-section="generator" class="nav-link">SMS Generator</a>
+        <a href="#" data-section="templates" class="nav-link">Templates</a>
+        <a href="#" data-section="contacts" class="nav-link">Contacts</a>
+        <a href="#" data-section="history" class="nav-link">History</a>
+        <a href="#" id="clear-data-btn" class="nav-link nav-danger">Clear Data</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard -->
+      <section id="section-dashboard" class="section active">
+        <div class="section-header">
+          <h2>Dashboard</h2>
+          <span class="demo-badge">Demo Data</span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total Campaigns</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-value" id="stat-drafts">0</div>
+            <div class="stat-label">Draft Campaigns</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-value" id="stat-scheduled">0</div>
+            <div class="stat-label">Scheduled Campaigns</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="stat-completed">0</div>
+            <div class="stat-label">Completed Campaigns</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👤</div>
+            <div class="stat-value" id="stat-contacts">0</div>
+            <div class="stat-label">Opted-In Contacts</div>
+          </div>
+        </div>
+        <div class="recent-activity">
+          <h3>Recent Campaign Activity</h3>
+          <ul id="recent-activity-list" class="activity-list">
+            <li class="empty-state">No recent campaign activity.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Campaigns -->
+      <section id="section-campaigns" class="section">
+        <div class="section-header">
+          <h2>Campaigns</h2>
+          <button id="new-campaign-btn" class="btn btn-primary btn-sm">+ New Campaign</button>
+        </div>
+        <div id="campaign-list" class="campaign-list">
+          <div class="empty-state">No campaigns created yet.</div>
+        </div>
+      </section>
+
+      <!-- SMS Generator -->
+      <section id="section-generator" class="section">
+        <div class="section-header">
+          <h2>Smart SMS Generator</h2>
+          <span class="badge">Local Generator</span>
+        </div>
+        <form id="generator-form" class="generator-form">
+          <div class="form-group">
+            <label for="gen-business">Business or Brand Name</label>
+            <input type="text" id="gen-business" placeholder="Your business name">
+          </div>
+          <div class="form-group">
+            <label for="gen-product">Product or Service</label>
+            <input type="text" id="gen-product" placeholder="What you're promoting">
+          </div>
+          <div class="form-group">
+            <label for="gen-offer">Main Offer</label>
+            <input type="text" id="gen-offer" placeholder="Special offer or key message">
+          </div>
+          <div class="form-group">
+            <label for="gen-goal">Campaign Goal</label>
+            <select id="gen-goal">
+              <option value="Promote a Product">Promote a Product</option>
+              <option value="Announce an Offer">Announce an Offer</option>
+              <option value="Share an Update">Share an Update</option>
+              <option value="Drive Website Visits">Drive Website Visits</option>
+              <option value="Generate Leads">Generate Leads</option>
+              <option value="Invite Customers to an Event">Invite Customers to an Event</option>
+              <option value="Send a Reminder">Send a Reminder</option>
+              <option value="Customer Follow-Up">Customer Follow-Up</option>
+              <option value="Customer Engagement">Customer Engagement</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="gen-tone">Tone</label>
+            <select id="gen-tone">
+              <option value="Professional">Professional</option>
+              <option value="Friendly">Friendly</option>
+              <option value="Promotional">Promotional</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Exciting">Exciting</option>
+              <option value="Simple">Simple</option>
+              <option value="Luxury">Luxury</option>
+              <option value="Casual">Casual</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="gen-cta">Call to Action</label>
+            <select id="gen-cta">
+              <option value="Shop Now">Shop Now</option>
+              <option value="Learn More">Learn More</option>
+              <option value="Visit Our Website">Visit Our Website</option>
+              <option value="Contact Us">Contact Us</option>
+              <option value="Reply to This Message">Reply to This Message</option>
+              <option value="Get Started">Get Started</option>
+              <option value="Book Now">Book Now</option>
+              <option value="Claim Your Offer">Claim Your Offer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="gen-link">Website Link (optional)</label>
+            <input type="url" id="gen-link" placeholder="https://yourwebsite.com">
+          </div>
+          <div class="generator-actions">
+            <button type="submit" class="btn btn-primary">Generate SMS</button>
+            <button type="button" id="gen-another" class="btn btn-secondary">Another Version</button>
+            <button type="button" id="gen-copy" class="btn btn-secondary">Copy Message</button>
+            <button type="button" id="gen-use" class="btn btn-secondary">Use in Campaign</button>
+            <button type="button" id="gen-clear" class="btn btn-secondary">Clear</button>
+          </div>
+        </form>
+        <div id="generator-result" class="generator-result" style="display:none;">
+          <div class="result-header">
+            <span>Generated SMS</span>
+            <span id="gen-char-count" class="char-counter">0 characters</span>
+          </div>
+          <div id="gen-output" class="sms-output"></div>
+        </div>
+      </section>
+
+      <!-- Templates -->
+      <section id="section-templates" class="section">
+        <div class="section-header">
+          <h2>SMS Templates</h2>
+          <button id="new-template-btn" class="btn btn-primary btn-sm">+ New Template</button>
+        </div>
+        <div id="template-list" class="template-list">
+          <!-- Rendered by JS -->
+        </div>
+        <!-- New/Edit Template Modal -->
+        <div id="template-modal" class="modal" style="display:none;">
+          <div class="modal-content">
+            <h3 id="template-modal-title">New Template</h3>
+            <div class="form-group">
+              <label for="template-name">Template Name</label>
+              <input type="text" id="template-name" placeholder="My Template">
+            </div>
+            <div class="form-group">
+              <label for="template-body">Message Content</label>
+              <textarea id="template-body" rows="4" placeholder="Write your template message…"></textarea>
+            </div>
+            <div class="modal-actions">
+              <button id="template-save-btn" class="btn btn-primary">Save Template</button>
+              <button id="template-cancel-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contacts -->
+      <section id="section-contacts" class="section">
+        <div class="section-header">
+          <h2>Opt-In Contacts</h2>
+          <button id="new-contact-btn" class="btn btn-primary btn-sm">+ Add Contact</button>
+        </div>
+        <div class="contact-filters">
+          <input type="text" id="contact-search" placeholder="Search contacts…" class="search-input">
+          <select id="contact-filter-group">
+            <option value="all">All Groups</option>
+            <option value="General">General</option>
+            <option value="Customers">Customers</option>
+            <option value="Leads">Leads</option>
+            <option value="VIP">VIP</option>
+          </select>
+          <select id="contact-filter-consent">
+            <option value="all">All Consent</option>
+            <option value="Confirmed Opt-In">Confirmed Opt-In</option>
+            <option value="Pending">Pending</option>
+            <option value="Opted Out">Opted Out</option>
+          </select>
+        </div>
+        <div id="contact-list" class="contact-list">
+          <div class="empty-state">No contacts added yet.</div>
+        </div>
+        <!-- New/Edit Contact Modal -->
+        <div id="contact-modal" class="modal" style="display:none;">
+          <div class="modal-content">
+            <h3 id="contact-modal-title">Add Contact</h3>
+            <div class="form-group">
+              <label for="contact-name">Contact Name</label>
+              <input type="text" id="contact-name" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+              <label for="contact-phone">Phone Number</label>
+              <input type="tel" id="contact-phone" placeholder="+1234567890">
+            </div>
+            <div class="form-group">
+              <label for="contact-group">Group</label>
+              <select id="contact-group">
+                <option value="General">General</option>
+                <option value="Customers">Customers</option>
+                <option value="Leads">Leads</option>
+                <option value="VIP">VIP</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="contact-consent">Consent Status</label>
+              <select id="contact-consent">
+                <option value="Confirmed Opt-In">Confirmed Opt-In</option>
+                <option value="Pending">Pending</option>
+                <option value="Opted Out">Opted Out</option>
+              </select>
+            </div>
+            <div class="modal-actions">
+              <button id="contact-save-btn" class="btn btn-primary">Save Contact</button>
+              <button id="contact-cancel-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Campaign History -->
+      <section id="section-history" class="section">
+        <div class="section-header">
+          <h2>Campaign History</h2>
+          <button id="export-history-btn" class="btn btn-secondary btn-sm">Export</button>
+        </div>
+        <div id="history-list" class="history-list">
+          <div class="empty-state">No campaign history yet.</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- New Campaign Modal -->
+    <div id="campaign-modal" class="modal" style="display:none;">
+      <div class="modal-content modal-large">
+        <h3 id="campaign-modal-title">New Campaign</h3>
+        <form id="campaign-form">
+          <div class="form-group">
+            <label for="campaign-name">Campaign Name *</label>
+            <input type="text" id="campaign-name" placeholder="Example: July Product Promotion" required>
+          </div>
+          <div class="form-group">
+            <label for="campaign-goal">Campaign Goal</label>
+            <select id="campaign-goal">
+              <option value="Promote a Product">Promote a Product</option>
+              <option value="Announce an Offer">Announce an Offer</option>
+              <option value="Share an Update">Share an Update</option>
+              <option value="Drive Website Visits">Drive Website Visits</option>
+              <option value="Generate Leads">Generate Leads</option>
+              <option value="Invite Customers to an Event">Invite Customers to an Event</option>
+              <option value="Send a Reminder">Send a Reminder</option>
+              <option value="Customer Follow-Up">Customer Follow-Up</option>
+              <option value="Customer Engagement">Customer Engagement</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="campaign-audience">Target Audience</label>
+            <select id="campaign-audience">
+              <option value="All opted-in contacts">All opted-in contacts</option>
+              <option value="Selected contact group">Selected contact group</option>
+              <option value="Custom audience">Custom audience</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="campaign-message">Message Content *</label>
+            <textarea id="campaign-message" rows="5" placeholder="Write your SMS message here…" required></textarea>
+            <div class="char-counter">
+              <span id="campaign-char-count">0</span> characters
+              <span class="segment-estimate">| ~<span id="campaign-segments">1</span> SMS segment(s)</span>
+            </div>
+            <div id="campaign-preview" class="message-preview" style="display:none;">
+              <strong>Preview:</strong>
+              <p id="campaign-preview-text"></p>
+            </div>
+          </div>
+          <div class="form-group consent-group">
+            <label class="consent-label">
+              <input type="checkbox" id="campaign-consent" required>
+              <span>I confirm that all selected recipients have provided valid consent to receive these messages.</span>
+            </label>
+            <p class="consent-notice">SMS Rush supports permission-based messaging. You are responsible for obtaining consent and complying with applicable messaging, privacy, and carrier requirements.</p>
+          </div>
+          <div class="form-group">
+            <label for="campaign-schedule">Schedule</label>
+            <input type="datetime-local" id="campaign-schedule">
+          </div>
+          <div class="modal-actions">
+            <button type="submit" id="campaign-save-btn" class="btn btn-primary">Save Campaign</button>
+            <button type="button" id="campaign-draft-btn" class="btn btn-secondary">Save as Draft</button>
+            <button type="button" id="campaign-test-btn" class="btn btn-secondary">Send Test Message</button>
+            <button type="button" id="campaign-cancel-btn" class="btn btn-secondary">Cancel</button>
+          </div>
+        </form>
+        <!-- Test Message Modal -->
+        <div id="test-modal" class="modal" style="display:none;">
+          <div class="modal-content">
+            <h3>Send Test Message</h3>
+            <p>Enter a test phone number to simulate sending this message.</p>
+            <div class="form-group">
+              <label for="test-number">Test Phone Number</label>
+              <input type="tel" id="test-number" placeholder="+1234567890">
+            </div>
+            <div class="form-group consent-group">
+              <label class="consent-label">
+                <input type="checkbox" id="test-consent">
+                <span>I confirm this number belongs to someone who has consented to receive test messages.</span>
+              </label>
+            </div>
+            <div class="modal-actions">
+              <button id="test-send-btn" class="btn btn-primary">Send Test</button>
+              <button id="test-cancel-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
