@@ -1,0 +1,19 @@
+{
+  "name": "sms-rush",
+  "version": "1.0.0",
+  "description": "Telegram Mini App for professional SMS marketing campaign management",
+  "main": "index.html",
+  "scripts": {
+    "start": "netlify dev",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "netlify-cli": "^15.0.0"
+  },
+  "author": "",
+  "license": "MIT"
+}
